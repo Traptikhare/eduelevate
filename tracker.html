@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+    <title>Application Tracker — EduElevate</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <style>body{font-family:'Inter',sans-serif;}h1,h2,h3{font-family:'Poppins',sans-serif;}</style>
+  </head>
+  <body class="bg-gray-50">
+    <header class="bg-white shadow">
+      <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+        <a href="index.html" class="flex items-center gap-4">
+          <img src="assets/logo.svg" alt="EduElevate" class="h-10" />
+        </a>
+        <nav class="hidden md:flex gap-6">
+          <a href="opportunities.html" class="text-gray-700">Opportunities</a>
+          <a href="tracker.html" class="text-indigo-600">Tracker</a>
+          <span id="userInfo" class="text-gray-600"></span>
+          <button id="logoutBtn" class="text-red-600 hidden">Logout</button>
+        </nav>
+      </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 py-12">
+      <h2 class="text-3xl font-bold text-indigo-700 mb-6">📊 Application Tracker</h2>
+      <p class="text-gray-700 mb-6">Track your applications with status updates and follow-up reminders.</p>
+
+      <div class="bg-white p-6 rounded-lg shadow mb-6">
+        <h3 class="font-semibold mb-3">Add Application</h3>
+        <form id="addForm" class="space-y-3">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <input id="title" class="border rounded px-3 py-2" placeholder="Opportunity Title" required />
+            <input id="company" class="border rounded px-3 py-2" placeholder="Company/Organization" />
+            <select id="status" class="border rounded px-3 py-2">
+              <option>Applied</option>
+              <option>In Review</option>
+              <option>Interview Scheduled</option>
+              <option>Offer Received</option>
+              <option>Rejected</option>
+            </select>
+          </div>
+          <input id="date" type="date" class="border rounded px-3 py-2" required />
+          <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded">Add Application</button>
+        </form>
+      </div>
+
+      <div id="appList" class="space-y-4"></div>
+    </main>
+
+    <script>
+      const user = JSON.parse(localStorage.getItem('eduUser') || 'null');
+      if (!user) {
+        window.location.href = 'login.html';
+      }
+      document.getElementById('userInfo').textContent = user.email;
+      document.getElementById('logoutBtn').classList.remove('hidden');
+      document.getElementById('logoutBtn').addEventListener('click', () => {
+        localStorage.removeItem('eduUser');
+        window.location.href = 'login.html';
+      });
+
+      let applications = JSON.parse(localStorage.getItem('eduApplications') || '[]');
+
+      function renderApplications() {
+        const list = document.getElementById('appList');
+        list.innerHTML = '';
+        if (applications.length === 0) {
+          list.innerHTML = '<p class="text-gray-600">No applications yet. Add one above!</p>';
+          return;
+        }
+        applications.forEach((app, idx) => {
+          const statusColor = {
+            'Applied': 'bg-blue-100 text-blue-700',
+            'In Review': 'bg-yellow-100 text-yellow-700',
+            'Interview Scheduled': 'bg-purple-100 text-purple-700',
+            'Offer Received': 'bg-green-100 text-green-700',
+            'Rejected': 'bg-red-100 text-red-700'
+          }[app.status] || 'bg-gray-100 text-gray-700';
+
+          const card = document.createElement('div');
+          card.className = 'bg-white p-6 rounded-lg shadow flex items-center justify-between';
+          card.innerHTML = `
+            <div>
+              <h4 class="font-semibold text-lg">${app.title}</h4>
+              <p class="text-sm text-gray-600">${app.company} • Applied on ${app.date}</p>
+              <span class="inline-block mt-2 px-3 py-1 rounded text-xs ${statusColor}">${app.status}</span>
+            </div>
+            <button class="deleteBtn px-3 py-1 bg-red-500 text-white rounded text-sm" data-idx="${idx}">Delete</button>
+          `;
+          list.appendChild(card);
+        });
+
+        document.querySelectorAll('.deleteBtn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const idx = parseInt(e.target.dataset.idx);
+            applications.splice(idx, 1);
+            localStorage.setItem('eduApplications', JSON.stringify(applications));
+            renderApplications();
+          });
+        });
+      }
+
+      renderApplications();
+
+      document.getElementById('addForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const title = document.getElementById('title').value;
+        const company = document.getElementById('company').value;
+        const status = document.getElementById('status').value;
+        const date = document.getElementById('date').value;
+
+        applications.push({title, company, status, date});
+        localStorage.setItem('eduApplications', JSON.stringify(applications));
+        e.target.reset();
+        renderApplications();
+      });
+    </script>
+  </body>
+</html>

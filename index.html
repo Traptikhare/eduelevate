@@ -1,0 +1,522 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+    <title>EduElevate — Unlocking Student Potential</title>
+  <meta name="description" content="EduElevate: Discover internships, scholarships, hackathons and more. Build resumes, track applications, and get AI-powered recommendations." />
+  <meta property="og:title" content="EduElevate — Unlocking Student Potential" />
+  <meta property="og:description" content="A student-first platform to discover verified internships, scholarships, hackathons and competitions. Build resumes, track applications, and get AI-driven recommendations." />
+  <meta property="og:image" content="assets/hero-illustration.svg" />
+  <meta property="og:type" content="website" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body { 
+        font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+        background: linear-gradient(-45deg, #667eea, #e8e8e9, #fdfaf6, #ced09b);
+        background-size: 400% 400%;
+        animation: gradientShift 15s ease infinite;
+      }
+      
+      @keyframes gradientShift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+      }
+      
+      h1,h2,h3,h4 { font-family: 'Poppins', 'Inter', sans-serif; }
+      
+      /* Floating shapes animation */
+      .floating-shapes {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+        z-index: 0;
+        overflow: hidden;
+      }
+      
+      .shape {
+        position: absolute;
+        border-radius: 50%;
+        opacity: 0.3;
+        animation: float 15s infinite ease-in-out;
+        filter: blur(40px);
+      }
+      
+      .shape:nth-child(1) {
+        width: 150px;
+        height: 150px;
+        background: rgba(255, 255, 255, 0.3);
+        top: 10%;
+        left: 10%;
+        animation-delay: 0s;
+      }
+      
+      .shape:nth-child(2) {
+        width: 200px;
+        height: 200px;
+        background: rgba(255, 255, 255, 0.2);
+        top: 60%;
+        left: 80%;
+        animation-delay: 3s;
+      }
+      
+      .shape:nth-child(3) {
+        width: 180px;
+        height: 180px;
+        background: rgba(255, 255, 255, 0.25);
+        top: 80%;
+        left: 20%;
+        animation-delay: 6s;
+      }
+      
+      .shape:nth-child(4) {
+        width: 120px;
+        height: 120px;
+        background: rgba(255, 255, 255, 0.35);
+        top: 30%;
+        left: 70%;
+        animation-delay: 2s;
+      }
+      
+      .shape:nth-child(5) {
+        width: 160px;
+        height: 160px;
+        background: rgba(255, 255, 255, 0.28);
+        top: 50%;
+        left: 50%;
+        animation-delay: 4s;
+      }
+      
+      @keyframes float {
+        0%, 100% { transform: translate(0, 0) scale(1); }
+        25% { transform: translate(30px, -30px) scale(1.1); }
+        50% { transform: translate(-30px, -60px) scale(0.9); }
+        75% { transform: translate(-30px, -30px) scale(1.05); }
+      }
+      
+      main, header, footer {
+        position: relative;
+        z-index: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Floating background shapes -->
+    <div class="floating-shapes">
+      <div class="shape"></div>
+      <div class="shape"></div>
+      <div class="shape"></div>
+      <div class="shape"></div>
+      <div class="shape"></div>
+    </div>
+    
+    <header class="bg-white/95 backdrop-blur-md shadow sticky top-0 z-50">
+      <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-4">
+          <img src="assets/logo.svg" alt="EduElevate" class="h-10" />
+          <span class="text-sm text-gray-600">Unlocking Student Potential</span>
+        </div>
+        <nav class="hidden md:flex items-center gap-6">
+          <a href="opportunities.html" class="text-gray-700 hover:text-indigo-600">Opportunities</a>
+          <a href="resume-builder.html" class="text-gray-700 hover:text-indigo-600">Resume</a>
+          <a href="tracker.html" class="text-gray-700 hover:text-indigo-600">Tracker</a>
+          <a href="hostel-finder.html" class="text-gray-700 hover:text-indigo-600">Hostels</a>
+          <a href="mentors.html" class="text-gray-700 hover:text-indigo-600">Mentors</a>
+        </nav>
+        <div class="hidden md:flex items-center gap-3">
+          <a href="login.html" class="text-sm text-gray-700">Login</a>
+          <a href="register.html" class="px-4 py-2 bg-indigo-600 text-white rounded-md text-sm">Register</a>
+        </div>
+        <button id="menuBtn" class="md:hidden p-2 rounded bg-indigo-50">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
+      <div id="mobileMenu" class="md:hidden hidden border-t">
+        <div class="px-4 py-3 space-y-2">
+          <a href="opportunities.html" class="block text-gray-700">Opportunities</a>
+          <a href="resume-builder.html" class="block text-gray-700">Resume</a>
+          <a href="tracker.html" class="block text-gray-700">Tracker</a>
+          <a href="hostel-finder.html" class="block text-gray-700">Hostels</a>
+          <a href="mentors.html" class="block text-gray-700">Mentors</a>
+          <div class="pt-2">
+            <a href="login.html" class="block w-full text-center px-4 py-2 bg-indigo-600 text-white rounded">Login</a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 py-12">
+      <section class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+        <div>
+          <h2 class="text-4xl font-extrabold mb-4 text-indigo-700">EduElevate — Unlocking Student Potential</h2>
+          <p class="text-gray-700 mb-6">A student-first platform to discover verified internships, scholarships, hackathons and competitions — personalized by stream, location, and interests. Build resumes, track applications, and get AI-driven recommendations.</p>
+          <div class="flex gap-3">
+            <a href="opportunities.html" class="px-6 py-3 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition">Browse Opportunities</a>
+            <a href="login.html" class="px-6 py-3 border border-indigo-600 text-indigo-600 rounded-md hover:bg-indigo-50 transition">Login / Register</a>
+          </div>
+
+        </div>
+        <div class="bg-white rounded-xl shadow p-6 flex flex-col items-stretch">
+          <img src="assets/hero-illustration.svg" alt="hero" class="mb-4 rounded" />
+          <form id="demoForm" class="space-y-4">
+            <div>
+              <label class="block text-sm text-gray-600">Keyword</label>
+              <input id="q" class="w-full border rounded px-3 py-2" placeholder="e.g., Data Science internship" />
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <select id="stream" class="border rounded px-3 py-2">
+                <option>All streams</option>
+                <option>Computer Science</option>
+                <option>Mechanical</option>
+                <option>Design</option>
+              </select>
+              <select id="type" class="border rounded px-3 py-2">
+                <option>Any</option>
+                <option>Internship</option>
+                <option>Scholarship</option>
+                <option>Hackathon</option>
+              </select>
+            </div>
+            <div class="flex gap-3">
+              <button type="button" id="searchBtn" class="px-4 py-2 bg-indigo-600 text-white rounded">Search</button>
+              <button type="button" id="saveDemo" class="px-4 py-2 border rounded">Save</button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- Statistics Counter -->
+      <section id="stats" class="mt-16 bg-gradient-to-r from-indigo-600 to-sky-500 rounded-xl shadow-lg p-8">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-white text-center">
+          <div>
+            <div class="text-4xl font-bold" id="count1">0</div>
+            <div class="text-sm mt-2 opacity-90">Live Opportunities</div>
+          </div>
+          <div>
+            <div class="text-4xl font-bold" id="count2">0</div>
+            <div class="text-sm mt-2 opacity-90">Active Students</div>
+          </div>
+          <div>
+            <div class="text-4xl font-bold" id="count3">0</div>
+            <div class="text-sm mt-2 opacity-90">Verified Mentors</div>
+          </div>
+          <div>
+            <div class="text-4xl font-bold" id="count4">0</div>
+            <div class="text-sm mt-2 opacity-90">Upcoming Events</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Trust Badges -->
+      <section id="trust" class="mt-12 flex flex-wrap justify-center gap-6 text-center">
+        <div class="flex items-center gap-2 bg-green-50 px-4 py-2 rounded-full">
+          <span class="text-2xl">✅</span>
+          <span class="text-sm font-semibold text-green-800">100% Verified Opportunities</span>
+        </div>
+        <div class="flex items-center gap-2 bg-blue-50 px-4 py-2 rounded-full">
+          <span class="text-2xl">🆓</span>
+          <span class="text-sm font-semibold text-blue-800">Completely Free Platform</span>
+        </div>
+        <div class="flex items-center gap-2 bg-purple-50 px-4 py-2 rounded-full">
+          <span class="text-2xl">🔒</span>
+          <span class="text-sm font-semibold text-purple-800">Secure & Private</span>
+        </div>
+        <div class="flex items-center gap-2 bg-yellow-50 px-4 py-2 rounded-full">
+          <span class="text-2xl">⚡</span>
+          <span class="text-sm font-semibold text-yellow-800">Instant Notifications</span>
+        </div>
+      </section>
+
+      <!-- Featured Opportunities -->
+      <section id="featured" class="mt-12">
+        <h3 class="text-2xl font-semibold mb-4 flex items-center gap-2">
+          <span class="text-3xl"></span>
+          Featured Opportunities - Apply Now!
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="bg-white p-6 rounded-lg shadow-lg border-t-4 border-indigo-600 hover:shadow-xl transition">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-xl">G</div>
+              <div>
+                <h4 class="font-bold">Google Summer Internship</h4>
+                <p class="text-xs text-gray-500">Google Inc.</p>
+              </div>
+              
+           </div>
+            <div class="flex items-center gap-2 mb-2">
+              <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">₹80,000/month</span>
+              <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">Remote</span>
+            </div>
+            <p class="text-sm text-gray-600 mb-3">Work on cutting-edge AI and Cloud technologies. 6-month paid internship.</p>
+            <a href="opportunities.html" class="block text-center px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">View Details →</a>
+          </div>
+          
+          <div class="bg-white p-6 rounded-lg shadow-lg border-t-4 border-sky-600 hover:shadow-xl transition">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center text-white font-bold text-xl">A</div>
+              <div>
+                <h4 class="font-bold">Amazon SDE Internship</h4>
+                <p class="text-xs text-gray-500">Amazon</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2 mb-2">
+              <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">₹75,000/month</span>
+              <span class="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded">Bangalore</span>
+            </div>
+            <p class="text-sm text-gray-600 mb-3">Backend development with AWS services. Pre-placement offer potential.</p>
+            <a href="opportunities.html" class="block text-center px-4 py-2 bg-sky-600 text-white rounded hover:bg-sky-700">View Details →</a>
+          </div>
+          
+          <div class="bg-white p-6 rounded-lg shadow-lg border-t-4 border-purple-600 hover:shadow-xl transition">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center text-white font-bold text-xl">₹</div>
+              <div>
+                <h4 class="font-bold">Merit Scholarship 2025</h4>
+                <p class="text-xs text-gray-500">Govt. of India</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2 mb-2">
+              <span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded">₹1,00,000</span>
+              <span class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded">Deadline: Oct 20</span>
+            </div>
+            <p class="text-sm text-gray-600 mb-3">Full tuition coverage for engineering students. CGPA 8.5+ eligible.</p>
+            <a href="opportunities.html" class="block text-center px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700">View Details →</a>
+          </div>
+        </div>
+      </section>
+
+  <section id="features" class="mt-12">
+        <h3 class="text-2xl font-semibold mb-4">All Features — Click to Explore</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="bg-white p-6 rounded-xl shadow hover:shadow-2xl transition-all duration-300 cursor-pointer group" onclick="window.location.href='opportunities.html'">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center text-white text-2xl group-hover:scale-110 transition">
+                💼
+              </div>
+              <h4 class="font-semibold text-lg">Opportunity Explorer</h4>
+            </div>
+            <p class="text-sm text-gray-600">Search and filter internships, scholarships, hackathons.</p>
+          </div>
+          
+          <div class="bg-white p-6 rounded-xl shadow hover:shadow-2xl transition-all duration-300 cursor-pointer group" onclick="window.location.href='resume-builder.html'">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-lg flex items-center justify-center text-white text-2xl group-hover:scale-110 transition">
+                📄
+              </div>
+              <h4 class="font-semibold text-lg">Resume Builder</h4>
+            </div>
+            <p class="text-sm text-gray-600">Create professional resumes with guided forms and preview.</p>
+          </div>
+          
+          <div class="bg-white p-6 rounded-xl shadow hover:shadow-2xl transition-all duration-300 cursor-pointer group" onclick="window.location.href='tracker.html'">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center text-white text-2xl group-hover:scale-110 transition">
+                ✅
+              </div>
+              <h4 class="font-semibold text-lg">Application Tracker</h4>
+            </div>
+            <p class="text-sm text-gray-600">Log and track all your applications with status updates.</p>
+          </div>
+          
+          <div class="bg-white p-6 rounded-xl shadow hover:shadow-2xl transition-all duration-300 cursor-pointer group" onclick="window.location.href='hostel-finder.html'">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg flex items-center justify-center text-white text-2xl group-hover:scale-110 transition">
+                🏠
+              </div>
+              <h4 class="font-semibold text-lg">Hostel Finder</h4>
+            </div>
+            <p class="text-sm text-gray-600">Find and book hostels near colleges or internship locations.</p>
+          </div>
+          
+          <div class="bg-white p-6 rounded-xl shadow hover:shadow-2xl transition-all duration-300 cursor-pointer group" onclick="window.location.href='mentors.html'">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center text-white text-2xl group-hover:scale-110 transition">
+                👨‍🏫
+              </div>
+              <h4 class="font-semibold text-lg">Mentor Connect</h4>
+            </div>
+            <p class="text-sm text-gray-600">Connect with verified mentors for career guidance.</p>
+          </div>
+          
+          <div class="bg-white p-6 rounded-xl shadow hover:shadow-2xl transition-all duration-300 cursor-pointer group" onclick="window.location.href='study-materials.html'">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-12 h-12 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-lg flex items-center justify-center text-white text-2xl group-hover:scale-110 transition">
+                📚
+              </div>
+              <h4 class="font-semibold text-lg">Study Material Hub</h4>
+            </div>
+            <p class="text-sm text-gray-600">Upload and access notes, guides by stream and semester.</p>
+          </div>
+          
+          <div class="bg-white p-6 rounded-xl shadow hover:shadow-2xl transition-all duration-300 cursor-pointer group" onclick="window.location.href='events.html'">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-12 h-12 bg-gradient-to-br from-pink-500 to-rose-600 rounded-lg flex items-center justify-center text-white text-2xl group-hover:scale-110 transition">
+                📅
+              </div>
+              <h4 class="font-semibold text-lg">Event Calendar</h4>
+            </div>
+            <p class="text-sm text-gray-600">Webinars, workshops with RSVP and reminders.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="testimonials" class="mt-12">
+        <h3 class="text-2xl font-semibold mb-4">What students say</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="bg-white p-6 rounded shadow">
+            <p class="text-gray-700">“EduElevate helped me find a paid internship in my field within weeks. The resume builder is super easy.”</p>
+            <div class="mt-4 text-sm text-gray-600">— Anjali, CS Student</div>
+          </div>
+          <div class="bg-white p-6 rounded shadow">
+            <p class="text-gray-700">“I saved 10+ scholarships and tracked my applications. Notifications saved me from missing deadlines.”</p>
+            <div class="mt-4 text-sm text-gray-600">— Rohit, Mechanical</div>
+          </div>
+          <div class="bg-white p-6 rounded shadow">
+            <p class="text-gray-700">“Mentor Connect helped me prepare for interviews — highly recommended for students in smaller towns.”</p>
+            <div class="mt-4 text-sm text-gray-600">— Priya, Design</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="cta" class="mt-12 bg-gradient-to-r from-indigo-600 to-sky-500 text-white p-8 rounded-lg">
+        <div class="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+          <div>
+            <h3 class="text-2xl font-bold">Get started with EduElevate</h3>
+            <p class="mt-2 opacity-90">Download the app and discover opportunities tailored to you. Resume tools and application tracking included.</p>
+          </div>
+          <div class="flex items-center gap-4">
+            <a href="#" class="bg-white text-indigo-700 px-4 py-2 rounded inline-flex items-center gap-2">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Play" style="height:28px" />
+            </a>
+            <a href="#" class="bg-white text-indigo-700 px-4 py-2 rounded inline-flex items-center gap-2">
+              <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="AppStore" style="height:28px" />
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section id="contact" class="mt-12 bg-white p-6 rounded shadow">
+        <h3 class="text-xl font-semibold mb-3">Contact & Feedback</h3>
+        <p class="text-gray-700 mb-4">Have ideas or want to collaborate? Drop a message and we’ll get back to you.</p>
+        <form action="mailto:hello@eduelevate.example" method="post" encType="text/plain" class="space-y-3 max-w-2xl">
+          <div>
+            <label class="block text-sm text-gray-600">Name</label>
+            <input name="name" class="w-full border rounded px-3 py-2" />
+          </div>
+          <div>
+            <label class="block text-sm text-gray-600">Email</label>
+            <input name="email" type="email" class="w-full border rounded px-3 py-2" />
+          </div>
+          <div>
+            <label class="block text-sm text-gray-600">Message</label>
+            <textarea name="message" class="w-full border rounded px-3 py-2" rows="4"></textarea>
+          </div>
+          <div>
+            <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded">Send</button>
+          </div>
+        </form>
+      </section>
+    </main>
+
+    <footer class="bg-white mt-12">
+      <div class="max-w-6xl mx-auto px-4 py-6 flex items-center justify-between text-sm text-gray-600">
+        <div>© 2025 EduElevate • Built for students</div>
+        <div class="flex gap-4">
+          <a href="opportunities.html" class="hover:text-indigo-600">Opportunities</a>
+          <a href="resume-builder.html" class="hover:text-indigo-600">Resume</a>
+          <a href="tracker.html" class="hover:text-indigo-600">Tracker</a>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      document.getElementById('searchBtn').addEventListener('click', function() {
+        const q = document.getElementById('q').value;
+        const stream = document.getElementById('stream').value;
+        const type = document.getElementById('type').value;
+        
+        // Redirect to opportunities page with search params
+        let url = 'opportunities.html?';
+        if (q) url += 'q=' + encodeURIComponent(q) + '&';
+        if (stream !== 'All streams') url += 'stream=' + encodeURIComponent(stream) + '&';
+        if (type !== 'Any') url += 'type=' + encodeURIComponent(type);
+        
+        window.location.href = url;
+      });
+      
+      document.getElementById('saveDemo').addEventListener('click', function() {
+        alert('Please login to save opportunities!');
+        window.location.href = 'login.html';
+      });
+
+      // Mobile menu toggle
+      const menuBtn = document.getElementById('menuBtn');
+      const mobileMenu = document.getElementById('mobileMenu');
+      if (menuBtn) {
+        menuBtn.addEventListener('click', () => {
+          mobileMenu.classList.toggle('hidden');
+        });
+      }
+
+      // Slight rounding for hero image on small screens
+      const heroImg = document.querySelector('img[alt="hero"]');
+      if (heroImg && window.innerWidth < 640) heroImg.style.borderRadius = '12px';
+
+      // Animated counters
+      function animateCounter(id, target, suffix = '') {
+        let current = 0;
+        const increment = target / 50;
+        const timer = setInterval(() => {
+          current += increment;
+          if (current >= target) {
+            current = target;
+            clearInterval(timer);
+          }
+          document.getElementById(id).textContent = Math.floor(current) + suffix;
+        }, 30);
+      }
+      
+      animateCounter('count1', 1500, '+');
+      animateCounter('count2', 5000, '+');
+      animateCounter('count3', 50, '+');
+      animateCounter('count4', 100, '+');
+
+      // FAQ Accordion
+      document.querySelectorAll('.faq-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const content = this.nextElementSibling;
+          const icon = this.querySelector('span:last-child');
+          
+          // Close all other FAQs
+          document.querySelectorAll('.faq-content').forEach(c => {
+            if (c !== content) c.classList.add('hidden');
+          });
+          document.querySelectorAll('.faq-btn span:last-child').forEach(i => {
+            if (i !== icon) i.textContent = '+';
+          });
+          
+          // Toggle current FAQ
+          content.classList.toggle('hidden');
+          icon.textContent = content.classList.contains('hidden') ? '+' : '−';
+        });
+      });
+
+      // Newsletter form
+      document.getElementById('newsletterForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const email = document.getElementById('newsletterEmail').value;
+        alert('🎉 Thank you for subscribing! Welcome to the EduElevate community.\n\nYou will receive weekly opportunity alerts at: ' + email);
+        this.reset();
+      });
+    </script>
+  </body>
+</html>

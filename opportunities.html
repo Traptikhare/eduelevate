@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+    <title>Opportunities — EduElevate</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+      body { 
+        font-family: 'Inter', sans-serif;
+        background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #4facfe);
+        background-size: 400% 400%;
+        animation: gradientShift 15s ease infinite;
+      }
+      
+      @keyframes gradientShift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+      }
+      
+      h1, h2, h3 { font-family: 'Poppins', sans-serif; }
+      
+      .card-hover {
+        transition: all 0.3s ease;
+      }
+      
+      .card-hover:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+      
+      .loading {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 3px solid rgba(255,255,255,.3);
+        border-radius: 50%;
+        border-top-color: #fff;
+        animation: spin 1s ease-in-out infinite;
+      }
+      
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Floating shapes background -->
+    <div class="fixed inset-0 pointer-events-none overflow-hidden" style="z-index: 0;">
+      <div style="position: absolute; top: 10%; left: 10%; width: 150px; height: 150px; background: rgba(255,255,255,0.15); border-radius: 50%; filter: blur(40px); animation: float 15s infinite ease-in-out;"></div>
+      <div style="position: absolute; bottom: 20%; right: 15%; width: 200px; height: 200px; background: rgba(255,255,255,0.1); border-radius: 50%; filter: blur(40px); animation: float 18s infinite ease-in-out 2s;"></div>
+    </div>
+    
+    <header class="sticky top-0 bg-white/95 backdrop-blur-md shadow-sm z-50" style="position: relative;">
+      <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+        <a href="index.html" class="flex items-center gap-4">
+          <img src="assets/logo.svg" alt="EduElevate" class="h-10" />
+        </a>
+        <nav class="hidden md:flex gap-6">
+          <a href="index.html" class="text-gray-700">Home</a>
+          <a href="opportunities.html" class="text-indigo-600">Opportunities</a>
+          <a href="resume-builder.html" class="text-gray-700">Resume</a>
+          <a href="tracker.html" class="text-gray-700">Tracker</a>
+          <span id="userInfo" class="text-gray-600"></span>
+          <button id="logoutBtn" class="text-red-600">Logout</button>
+        </nav>
+      </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-12" style="position: relative; z-index: 1;">
+      <div class="mb-8">
+        <h2 class="text-4xl font-bold text-white mb-2">🔍 Discover Opportunities</h2>
+        <p class="text-white/80">Find your perfect internship, scholarship, or competition</p>
+      </div>
+
+      <!-- Search & Filter -->
+      <div class="bg-white/95 backdrop-blur-md p-6 rounded-xl shadow-lg mb-8">
+        <div class="flex flex-col md:flex-row gap-3">
+          <input id="searchInput" class="flex-1 border-2 border-gray-200 rounded-lg px-4 py-3 focus:border-indigo-500 focus:outline-none transition" placeholder="🔎 Search by keyword, company, or stream..." />
+          <select id="filterType" class="border-2 border-gray-200 rounded-lg px-4 py-3 focus:border-indigo-500 focus:outline-none transition">
+            <option value="">📂 All Types</option>
+            <option value="Internship">💼 Internship</option>
+            <option value="Scholarship">🎓 Scholarship</option>
+            <option value="Hackathon">💻 Hackathon</option>
+            <option value="Competition">🏆 Competition</option>
+          </select>
+          <button id="searchBtn" class="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-semibold hover:from-indigo-700 hover:to-purple-700 transition shadow-md">
+            Search
+          </button>
+          <button id="clearBtn" class="px-4 py-3 bg-gray-200 text-gray-700 rounded-lg font-semibold hover:bg-gray-300 transition">
+            Clear
+          </button>
+        </div>
+        <div id="resultCount" class="text-sm text-gray-600 mt-3"></div>
+      </div>
+
+      <!-- Loading State -->
+      <div id="loading" class="text-center py-12 hidden">
+        <div class="loading mx-auto mb-4"></div>
+        <p class="text-white">Loading opportunities...</p>
+      </div>
+
+      <!-- Empty State -->
+      <div id="emptyState" class="text-center py-12 hidden">
+        <div class="text-6xl mb-4">😕</div>
+        <h3 class="text-2xl font-bold text-white mb-2">No Opportunities Found</h3>
+        <p class="text-white/80 mb-4">Try adjusting your search or filters</p>
+        <button onclick="document.getElementById('clearBtn').click()" class="px-6 py-2 bg-white text-indigo-600 rounded-lg font-semibold hover:bg-gray-100 transition">
+          Clear Filters
+        </button>
+      </div>
+
+      <!-- Opportunities Grid -->
+      <div id="oppList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    </main>
+
+    <script>
+      const user = JSON.parse(localStorage.getItem('eduUser') || 'null');
+      if (!user) {
+        window.location.href = 'login.html';
+      }
+      document.getElementById('userInfo').textContent = user.email;
+      document.getElementById('logoutBtn').addEventListener('click', () => {
+        localStorage.removeItem('eduUser');
+        window.location.href = 'login.html';
+      });
+
+      // Demo data
+      const opportunities = [
+        {id:1, title:'Google Summer Internship 2025', type:'Internship', stream:'Computer Science', company:'Google', deadline:'2025-11-30', description:'3-month paid internship at Google with mentorship and real-world projects. Work on cutting-edge technologies. Stipend: ₹80,000/month.'},
+        {id:2, title:'National Merit Scholarship', type:'Scholarship', stream:'All', company:'Govt. of India', deadline:'2025-10-15', description:'₹50,000 scholarship for top students with strong academic records. Covers tuition fees for one year.'},
+        {id:3, title:'Smart India Hackathon 2025', type:'Hackathon', stream:'All', company:'AICTE', deadline:'2025-12-01', description:'National hackathon with prizes up to ₹1 lakh. 36-hour hackathon with mentorship. Travel provided.'},
+        {id:4, title:'IEEE Paper Competition', type:'Competition', stream:'Engineering', company:'IEEE India', deadline:'2025-11-20', description:'Submit research papers and win awards. Categories: AI, IoT, Robotics. Best paper: ₹25,000.'},
+        {id:5, title:'Microsoft Explore Internship', type:'Internship', stream:'Computer Science', company:'Microsoft', deadline:'2025-12-10', description:'6-month internship with stipend ₹60,000/month. Work on Azure, Windows. PPO possible.'},
+        {id:6, title:'Tata Scholarship for Excellence', type:'Scholarship', stream:'All', company:'Tata Trusts', deadline:'2025-10-25', description:'Full tuition scholarship ₹1,00,000/year for 4 years. Mentorship program included.'},
+        {id:7, title:'Amazon ML Summer School', type:'Internship', stream:'Computer Science', company:'Amazon', deadline:'2025-11-15', description:'2-month ML internship. Learn from experts. Stipend: ₹75,000/month. PPO for top performers.'},
+        {id:8, title:'TCS Digital Scholarship', type:'Scholarship', stream:'Computer Science', company:'TCS', deadline:'2025-10-30', description:'₹60,000 scholarship for CS/IT students. One-time payment. Merit-based selection.'},
+        {id:9, title:'Flipkart GRiD 4.0', type:'Hackathon', stream:'Computer Science', company:'Flipkart', deadline:'2025-12-05', description:'National software development challenge. Finals at Bangalore. Prize: ₹2 lakhs + internship.'},
+        {id:10, title:'Design Thinking Workshop', type:'Competition', stream:'Design', company:'IIIT Delhi', deadline:'2025-11-10', description:'3-day workshop on design thinking. Best team wins ₹15,000. Certificate from IIIT Delhi.'},
+        {id:11, title:'JPMorgan Code for Good', type:'Hackathon', stream:'Computer Science', company:'JPMorgan', deadline:'2025-11-25', description:'24-hour hackathon for social good. Prize: ₹50,000 + internship opportunity.'},
+        {id:12, title:'Inspire Scholarship', type:'Scholarship', stream:'Science', company:'DST Govt', deadline:'2025-10-20', description:'₹80,000 annual scholarship for science students. Supports research projects.'},
+        {id:13, title:'Goldman Sachs Engineering', type:'Internship', stream:'Computer Science', company:'Goldman Sachs', deadline:'2025-12-15', description:'10-week summer internship in Bangalore. Stipend: ₹1,00,000/month. Housing allowance.'},
+        {id:14, title:'Entrepreneurship Challenge', type:'Competition', stream:'All', company:'IIT Bombay', deadline:'2025-11-30', description:'Pitch your startup idea. Seed funding: ₹5 lakhs. 3-month mentorship. Investor connects.'},
+        {id:15, title:'Adobe Creative Jam', type:'Competition', stream:'Design', company:'Adobe', deadline:'2025-12-08', description:'2-hour design sprint. Winner: ₹30,000 + Adobe CC subscription. Online event.'}
+      ];
+
+      let bookmarks = JSON.parse(localStorage.getItem('eduBookmarks') || '[]');
+
+      // Type icons and colors
+      const typeConfig = {
+        'Internship': { icon: '💼', color: 'from-blue-500 to-cyan-500', badge: 'bg-blue-100 text-blue-800' },
+        'Scholarship': { icon: '🎓', color: 'from-purple-500 to-pink-500', badge: 'bg-purple-100 text-purple-800' },
+        'Hackathon': { icon: '💻', color: 'from-green-500 to-emerald-500', badge: 'bg-green-100 text-green-800' },
+        'Competition': { icon: '🏆', color: 'from-orange-500 to-red-500', badge: 'bg-orange-100 text-orange-800' }
+      };
+
+      function updateResultCount(count, total) {
+        const resultCountEl = document.getElementById('resultCount');
+        if (count === total) {
+          resultCountEl.textContent = `Showing all ${total} opportunities`;
+        } else {
+          resultCountEl.textContent = `Found ${count} of ${total} opportunities`;
+        }
+      }
+
+      function renderOpportunities(data) {
+        const list = document.getElementById('oppList');
+        const emptyState = document.getElementById('emptyState');
+        const loading = document.getElementById('loading');
+        
+        loading.classList.add('hidden');
+        
+        if (data.length === 0) {
+          list.classList.add('hidden');
+          emptyState.classList.remove('hidden');
+          updateResultCount(0, opportunities.length);
+          return;
+        }
+        
+        list.classList.remove('hidden');
+        emptyState.classList.add('hidden');
+        list.innerHTML = '';
+        updateResultCount(data.length, opportunities.length);
+        
+        data.forEach(opp => {
+          const isBookmarked = bookmarks.includes(opp.id);
+          const config = typeConfig[opp.type];
+          const card = document.createElement('div');
+          card.className = 'bg-white/95 backdrop-blur-md rounded-xl shadow-lg overflow-hidden card-hover';
+          card.innerHTML = `
+            <!-- Type Badge with Icon -->
+            <div class="bg-gradient-to-r ${config.color} p-4">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="text-3xl">${config.icon}</span>
+                  <span class="text-white font-bold text-lg">${opp.type}</span>
+                </div>
+                <button class="bookmarkBtn w-10 h-10 rounded-full ${isBookmarked ? 'bg-yellow-400 text-yellow-900' : 'bg-white/30 text-white'} hover:scale-110 transition font-bold text-xl" data-id="${opp.id}">
+                  ${isBookmarked ? '★' : '☆'}
+                </button>
+              </div>
+            </div>
+            
+            <!-- Content -->
+            <div class="p-5">
+              <div class="flex items-start gap-3 mb-3">
+                <div class="w-14 h-14 bg-gradient-to-br ${config.color} rounded-lg flex items-center justify-center text-white font-bold text-xl flex-shrink-0">
+                  ${opp.company.charAt(0)}
+                </div>
+                <div class="flex-1">
+                  <h3 class="font-bold text-lg text-gray-900 leading-tight mb-1">${opp.title}</h3>
+                  <p class="text-sm text-gray-600">${opp.company}</p>
+                </div>
+              </div>
+              
+              <div class="flex flex-wrap gap-2 mb-3">
+                <span class="${config.badge} text-xs px-3 py-1 rounded-full font-semibold">${opp.type}</span>
+                <span class="bg-gray-100 text-gray-700 text-xs px-3 py-1 rounded-full font-semibold">📚 ${opp.stream}</span>
+              </div>
+              
+              <p class="text-sm text-gray-700 mb-3 line-clamp-2">${opp.description}</p>
+              
+              <div class="flex items-center justify-between pt-3 border-t border-gray-100">
+                <div class="text-xs text-red-600 font-semibold">
+                  ⏰ ${opp.deadline}
+                </div>
+                <a href="opportunity-detail.html?id=${opp.id}" class="px-4 py-2 bg-gradient-to-r ${config.color} text-white rounded-lg font-semibold hover:shadow-lg transition text-sm">
+                  View Details →
+                </a>
+              </div>
+            </div>
+          `;
+          list.appendChild(card);
+        });
+
+        // Attach bookmark listeners
+        document.querySelectorAll('.bookmarkBtn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const id = parseInt(e.target.dataset.id);
+            if (bookmarks.includes(id)) {
+              bookmarks = bookmarks.filter(x => x !== id);
+            } else {
+              bookmarks.push(id);
+            }
+            localStorage.setItem('eduBookmarks', JSON.stringify(bookmarks));
+            renderOpportunities(data);
+          });
+        });
+      }
+
+      // Show loading initially
+      document.getElementById('loading').classList.remove('hidden');
+      
+      // Simulate loading delay
+      setTimeout(() => {
+        renderOpportunities(opportunities);
+      }, 500);
+
+      // Check URL parameters for search from landing page
+      const urlParams = new URLSearchParams(window.location.search);
+      const urlQuery = urlParams.get('q');
+      const urlStream = urlParams.get('stream');
+      const urlType = urlParams.get('type');
+      
+      if (urlQuery || urlStream || urlType) {
+        if (urlQuery) document.getElementById('searchInput').value = urlQuery;
+        if (urlType) document.getElementById('filterType').value = urlType;
+        
+        // Trigger search automatically after loading
+        setTimeout(() => performSearch(), 600);
+      }
+
+      // Search function
+      function performSearch() {
+        const keyword = document.getElementById('searchInput').value.toLowerCase();
+        const type = document.getElementById('filterType').value;
+        let filtered = opportunities;
+        
+        if (keyword) {
+          filtered = filtered.filter(o => 
+            o.title.toLowerCase().includes(keyword) || 
+            o.description.toLowerCase().includes(keyword) ||
+            o.company.toLowerCase().includes(keyword) ||
+            o.stream.toLowerCase().includes(keyword)
+          );
+        }
+        
+        if (type) {
+          filtered = filtered.filter(o => o.type === type);
+        }
+        
+        renderOpportunities(filtered);
+      }
+
+      // Search button
+      document.getElementById('searchBtn').addEventListener('click', performSearch);
+      
+      // Search on Enter key
+      document.getElementById('searchInput').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') performSearch();
+      });
+      
+      // Clear filters
+      document.getElementById('clearBtn').addEventListener('click', () => {
+        document.getElementById('searchInput').value = '';
+        document.getElementById('filterType').value = '';
+        renderOpportunities(opportunities);
+      });
+    </script>
+  </body>
+</html>

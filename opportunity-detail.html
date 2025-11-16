@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+    <title>Opportunity Detail — EduElevate</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <style>body{font-family:'Inter',sans-serif;}h1,h2,h3{font-family:'Poppins',sans-serif;}</style>
+  </head>
+  <body class="bg-gray-50">
+    <header class="bg-white shadow">
+      <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+        <a href="index.html" class="flex items-center gap-4">
+          <img src="assets/logo.svg" alt="EduElevate" class="h-10" />
+        </a>
+        <nav class="hidden md:flex gap-6">
+          <a href="opportunities.html" class="text-indigo-600">← Back to Opportunities</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 py-12">
+      <div id="detailContent" class="bg-white p-8 rounded-lg shadow"></div>
+    </main>
+
+    <script>
+      const user = JSON.parse(localStorage.getItem('eduUser') || 'null');
+      if (!user) window.location.href = 'login.html';
+
+      const opportunities = [
+        {id:1, title:'Google Summer Internship 2025', type:'Internship', stream:'Computer Science', company:'Google', deadline:'2025-11-30', description:'3-month paid internship at Google with mentorship and real-world projects. Work on cutting-edge technologies like AI, Cloud, and Android. Stipend: ₹80,000/month. Certificate provided.', eligibility:'2nd/3rd year CS students with CGPA > 7.5', link:'https://google.com/careers'},
+        {id:2, title:'National Merit Scholarship', type:'Scholarship', stream:'All', company:'Govt. of India', deadline:'2025-10-15', description:'₹50,000 scholarship for top students with strong academic records. Covers tuition fees for one year. Open to all streams. No bond required. Direct bank transfer.', eligibility:'All streams, CGPA > 8.0, Family income < 6 LPA', link:'#'},
+        {id:3, title:'Smart India Hackathon 2025', type:'Hackathon', stream:'All', company:'AICTE', deadline:'2025-12-01', description:'National hackathon with prizes up to ₹1 lakh. Build innovative solutions for real-world problems. 36-hour hackathon with mentorship. Travel and accommodation provided.', eligibility:'College students (teams of 4-6)', link:'https://sih.gov.in'},
+        {id:4, title:'IEEE Paper Competition', type:'Competition', stream:'Engineering', company:'IEEE India', deadline:'2025-11-20', description:'Submit research papers and win awards. Categories: AI, IoT, Robotics, Electronics. Best paper gets ₹25,000 + publication opportunity. Virtual presentation.', eligibility:'UG/PG students in engineering', link:'#'},
+        {id:5, title:'Microsoft Explore Internship', type:'Internship', stream:'Computer Science', company:'Microsoft', deadline:'2025-12-10', description:'6-month internship with stipend ₹60,000/month and potential full-time offer. Work on Azure, Windows, or Office 365. Rotational program across teams. Pre-placement offer possible.', eligibility:'Final year CS/IT students with coding skills', link:'https://careers.microsoft.com'},
+        {id:6, title:'Tata Scholarship for Excellence', type:'Scholarship', stream:'All', company:'Tata Trusts', deadline:'2025-10-25', description:'Full tuition scholarship for deserving students from tier 2/3 cities. ₹1,00,000 per year for 4 years. Mentorship program included. Leadership workshops.', eligibility:'Income < 5 LPA, CGPA > 8.5', link:'#'},
+        {id:7, title:'Amazon ML Summer School', type:'Internship', stream:'Computer Science', company:'Amazon', deadline:'2025-11-15', description:'2-month Machine Learning internship at Amazon. Learn from industry experts. Build ML models for real products. Stipend: ₹75,000/month. PPO for top performers.', eligibility:'3rd year students with ML/AI knowledge', link:'https://amazon.jobs'},
+        {id:8, title:'TCS Digital Scholarship', type:'Scholarship', stream:'Computer Science', company:'TCS', deadline:'2025-10-30', description:'₹60,000 scholarship for CS/IT students. One-time payment. No bond. Application review process. Merit-based selection. 500 scholarships available.', eligibility:'CS/IT students, CGPA > 7.0', link:'#'},
+        {id:9, title:'Flipkart GRiD 4.0', type:'Hackathon', stream:'Computer Science', company:'Flipkart', deadline:'2025-12-05', description:'National-level software development challenge. Build solutions for e-commerce. Round 1: Online coding. Finals at Bangalore. Prize: ₹2 lakhs + internship.', eligibility:'UG students (teams of 2-4)', link:'https://flipkart.com/grid'},
+        {id:10, title:'Design Thinking Workshop', type:'Competition', stream:'Design', company:'IIIT Delhi', deadline:'2025-11-10', description:'3-day workshop on design thinking and innovation. Work on real client problems. Best team wins ₹15,000. Certificate from IIIT Delhi. Networking opportunity.', eligibility:'All streams, interest in design', link:'#'},
+        {id:11, title:'JPMorgan Chase Code for Good', type:'Hackathon', stream:'Computer Science', company:'JPMorgan', deadline:'2025-11-25', description:'24-hour hackathon for social good. Build apps for NGOs. Mentorship from JPMorgan engineers. Prize: ₹50,000 + internship opportunity. Food & accommodation provided.', eligibility:'CS/IT students in 2nd/3rd year', link:'#'},
+        {id:12, title:'Inspire Scholarship for Science', type:'Scholarship', stream:'Science', company:'DST Govt', deadline:'2025-10-20', description:'₹80,000 annual scholarship for science students. Supports research projects. Mentor assigned. Conference participation. Valid for 3 years.', eligibility:'Science stream, CGPA > 8.0, Research interest', link:'#'},
+        {id:13, title:'Goldman Sachs Engineering Campus', type:'Internship', stream:'Computer Science', company:'Goldman Sachs', deadline:'2025-12-15', description:'10-week summer internship in Bangalore. Work on fintech projects. Stipend: ₹1,00,000/month. Housing allowance. High conversion rate to full-time.', eligibility:'Pre-final year, coding + aptitude test', link:'#'},
+        {id:14, title:'National Entrepreneurship Challenge', type:'Competition', stream:'All', company:'IIT Bombay', deadline:'2025-11-30', description:'Pitch your startup idea. Seed funding: ₹5 lakhs for winner. Incubation support. 3-month mentorship. Investor connects. Pan-India competition.', eligibility:'College students with startup idea', link:'#'},
+        {id:15, title:'Adobe Creative Jam', type:'Competition', stream:'Design', company:'Adobe', deadline:'2025-12-08', description:'2-hour design sprint. Create designs using Adobe XD/Figma. Theme announced on spot. Winner: ₹30,000 + Adobe CC subscription. Online event.', eligibility:'Design/CS students, portfolio required', link:'#'}
+      ];
+
+      const params = new URLSearchParams(window.location.search);
+      const id = parseInt(params.get('id'));
+      const opp = opportunities.find(o => o.id === id);
+
+      if (!opp) {
+        document.getElementById('detailContent').innerHTML = '<p class="text-red-600">Opportunity not found.</p>';
+      } else {
+        let bookmarks = JSON.parse(localStorage.getItem('eduBookmarks') || '[]');
+        const isBookmarked = bookmarks.includes(opp.id);
+
+        document.getElementById('detailContent').innerHTML = `
+          <h2 class="text-3xl font-bold text-indigo-700 mb-4">${opp.title}</h2>
+          <div class="flex gap-4 text-sm text-gray-600 mb-6">
+            <span class="px-3 py-1 bg-indigo-100 rounded">${opp.type}</span>
+            <span class="px-3 py-1 bg-gray-100 rounded">${opp.stream}</span>
+            <span class="text-red-600">Deadline: ${opp.deadline}</span>
+          </div>
+          <p class="text-gray-700 mb-4">${opp.description}</p>
+          <p class="text-sm text-gray-600 mb-2"><strong>Eligibility:</strong> ${opp.eligibility}</p>
+          <div class="flex gap-4 mt-6">
+            <button id="applyBtn" class="px-6 py-3 bg-indigo-600 text-white rounded">Apply Now</button>
+            <button id="bookmarkBtn" class="px-6 py-3 ${isBookmarked ? 'bg-yellow-500 text-white' : 'bg-gray-200 text-gray-700'} rounded">
+              ${isBookmarked ? '★ Bookmarked' : '☆ Bookmark'}
+            </button>
+          </div>
+          <div id="applyMsg" class="mt-4 text-green-600 hidden"></div>
+        `;
+
+        document.getElementById('applyBtn').addEventListener('click', () => {
+          const applications = JSON.parse(localStorage.getItem('eduApplications') || '[]');
+          const today = new Date().toISOString().split('T')[0];
+          applications.push({
+            title: opp.title,
+            company: opp.stream,
+            status: 'Applied',
+            date: today
+          });
+          localStorage.setItem('eduApplications', JSON.stringify(applications));
+          const msg = document.getElementById('applyMsg');
+          msg.textContent = `✅ Application submitted for ${opp.title}! Check your Tracker.`;
+          msg.classList.remove('hidden');
+        });
+
+        document.getElementById('bookmarkBtn').addEventListener('click', () => {
+          if (bookmarks.includes(opp.id)) {
+            bookmarks = bookmarks.filter(x => x !== opp.id);
+          } else {
+            bookmarks.push(opp.id);
+          }
+          localStorage.setItem('eduBookmarks', JSON.stringify(bookmarks));
+          location.reload();
+        });
+      }
+    </script>
+  </body>
+</html>

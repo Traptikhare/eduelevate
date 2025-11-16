@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+    <title>Login — EduElevate</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+      body { 
+        font-family: 'Inter', sans-serif;
+        background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #4facfe);
+        background-size: 400% 400%;
+        animation: gradientShift 15s ease infinite;
+      }
+      
+      @keyframes gradientShift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+      }
+      
+      h1, h2, h3 { font-family: 'Poppins', sans-serif; }
+      
+      .loading-btn {
+        position: relative;
+      }
+      
+      .loading-btn.loading {
+        pointer-events: none;
+        opacity: 0.7;
+      }
+      
+      .spinner {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        border: 2px solid rgba(255,255,255,.3);
+        border-radius: 50%;
+        border-top-color: #fff;
+        animation: spin 0.8s linear infinite;
+      }
+      
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Floating shapes background -->
+    <div class="fixed inset-0 pointer-events-none overflow-hidden" style="z-index: 0;">
+      <div style="position: absolute; top: 10%; left: 10%; width: 150px; height: 150px; background: rgba(255,255,255,0.15); border-radius: 50%; filter: blur(40px); animation: float 15s infinite ease-in-out;"></div>
+      <div style="position: absolute; bottom: 20%; right: 15%; width: 200px; height: 200px; background: rgba(255,255,255,0.1); border-radius: 50%; filter: blur(40px); animation: float 18s infinite ease-in-out 2s;"></div>
+    </div>
+    
+    <header class="sticky top-0 bg-white/95 backdrop-blur-md shadow-sm z-50" style="position: relative;">
+      <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+        <a href="index.html" class="flex items-center gap-4">
+          <img src="assets/logo.svg" alt="EduElevate" class="h-10" />
+        </a>
+        <nav class="hidden md:flex gap-6">
+          <a href="index.html" class="text-gray-700">Home</a>
+          <a href="opportunities.html" class="text-gray-700">Opportunities</a>
+          <a href="register.html" class="text-indigo-600">Register</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="min-h-screen flex items-center justify-center px-4 py-12" style="position: relative; z-index: 1;">
+      <div class="w-full max-w-md">
+        <div class="bg-white/95 backdrop-blur-md p-8 rounded-2xl shadow-2xl">
+          <div class="text-center mb-6">
+            <h2 class="text-3xl font-bold text-gray-900 mb-2">Welcome Back! 👋</h2>
+            <p class="text-gray-600">Login to access your EduElevate account</p>
+          </div>
+          
+          <!-- Demo Credentials -->
+          <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 p-4 rounded-lg mb-6">
+            <p class="text-sm text-blue-900 font-semibold mb-2">🔐 Demo Credentials:</p>
+            <div class="space-y-1 text-xs text-blue-800">
+              <p>👨‍🎓 Student: <code class="bg-white px-2 py-1 rounded">student@test.com</code> / <code class="bg-white px-2 py-1 rounded">pass123</code></p>
+              <p>👨‍💼 Admin: <code class="bg-white px-2 py-1 rounded">admin@test.com</code> / <code class="bg-white px-2 py-1 rounded">admin123</code></p>
+            </div>
+          </div>
+          
+          <!-- User Type Tabs -->
+          <div class="flex gap-3 mb-6">
+            <button id="studentTab" class="flex-1 px-4 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-semibold transition shadow-md">
+              👨‍🎓 Student
+            </button>
+            <button id="adminTab" class="flex-1 px-4 py-3 bg-gray-200 text-gray-700 rounded-lg font-semibold transition hover:bg-gray-300">
+              👨‍💼 Admin
+            </button>
+          </div>
+
+          <!-- Login Form -->
+          <form id="loginForm" class="space-y-4">
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Email Address</label>
+              <input id="email" type="email" class="w-full border-2 border-gray-200 rounded-lg px-4 py-3 focus:border-indigo-500 focus:outline-none transition" placeholder="you@example.com" required />
+            </div>
+            
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Password</label>
+              <div class="relative">
+                <input id="password" type="password" class="w-full border-2 border-gray-200 rounded-lg px-4 py-3 pr-12 focus:border-indigo-500 focus:outline-none transition" placeholder="••••••••" required />
+                <button type="button" id="togglePassword" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700">
+                  <span id="eyeIcon">👁️</span>
+                </button>
+              </div>
+            </div>
+            
+            <!-- Error Message -->
+            <div id="errorMsg" class="bg-red-50 border border-red-200 text-red-700 text-sm p-3 rounded-lg hidden">
+              <span class="font-semibold">❌ Login Failed!</span>
+              <p class="mt-1 text-xs"></p>
+            </div>
+            
+            <!-- Success Message -->
+            <div id="successMsg" class="bg-green-50 border border-green-200 text-green-700 text-sm p-3 rounded-lg hidden">
+              <span class="font-semibold">✅ Login Successful!</span>
+              <p class="mt-1 text-xs">Redirecting...</p>
+            </div>
+            
+            <button type="submit" id="loginBtn" class="loading-btn w-full px-4 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-semibold hover:from-indigo-700 hover:to-purple-700 transition shadow-lg">
+              <span id="btnText">Login</span>
+              <span id="btnLoader" class="spinner hidden"></span>
+            </button>
+          </form>
+
+          <!-- Divider -->
+          <div class="relative my-6">
+            <div class="absolute inset-0 flex items-center">
+              <div class="w-full border-t border-gray-300"></div>
+            </div>
+            <div class="relative flex justify-center text-sm">
+              <span class="px-2 bg-white text-gray-500">Or continue with</span>
+            </div>
+          </div>
+
+          <!-- Social Login -->
+          <div class="grid grid-cols-2 gap-3 mb-6">
+            <button class="flex items-center justify-center gap-2 px-4 py-3 border-2 border-gray-200 rounded-lg font-semibold hover:bg-gray-50 transition">
+              <svg class="w-5 h-5" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+              Google
+            </button>
+            <button class="flex items-center justify-center gap-2 px-4 py-3 border-2 border-gray-200 rounded-lg font-semibold hover:bg-gray-50 transition">
+              <svg class="w-5 h-5" fill="#0A66C2" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+              LinkedIn
+            </button>
+          </div>
+
+          <!-- Register Link -->
+          <p class="text-sm text-gray-600 text-center">
+            Don't have an account? <a href="register.html" class="text-indigo-600 font-semibold hover:text-indigo-700">Register here</a>
+          </p>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      let userType = 'student';
+      const studentTab = document.getElementById('studentTab');
+      const adminTab = document.getElementById('adminTab');
+      const loginForm = document.getElementById('loginForm');
+      const errorMsg = document.getElementById('errorMsg');
+      const successMsg = document.getElementById('successMsg');
+      const loginBtn = document.getElementById('loginBtn');
+      const btnText = document.getElementById('btnText');
+      const btnLoader = document.getElementById('btnLoader');
+      const togglePassword = document.getElementById('togglePassword');
+      const passwordInput = document.getElementById('password');
+      const eyeIcon = document.getElementById('eyeIcon');
+
+      // Toggle password visibility
+      togglePassword.addEventListener('click', () => {
+        const type = passwordInput.type === 'password' ? 'text' : 'password';
+        passwordInput.type = type;
+        eyeIcon.textContent = type === 'password' ? '👁️' : '🙈';
+      });
+
+      // Tab switching
+      studentTab.addEventListener('click', () => {
+        userType = 'student';
+        studentTab.classList.add('bg-gradient-to-r','from-indigo-600','to-purple-600','text-white','shadow-md');
+        studentTab.classList.remove('bg-gray-200','text-gray-700');
+        adminTab.classList.remove('bg-gradient-to-r','from-indigo-600','to-purple-600','text-white','shadow-md');
+        adminTab.classList.add('bg-gray-200','text-gray-700');
+      });
+
+      adminTab.addEventListener('click', () => {
+        userType = 'admin';
+        adminTab.classList.add('bg-gradient-to-r','from-indigo-600','to-purple-600','text-white','shadow-md');
+        adminTab.classList.remove('bg-gray-200','text-gray-700');
+        studentTab.classList.remove('bg-gradient-to-r','from-indigo-600','to-purple-600','text-white','shadow-md');
+        studentTab.classList.add('bg-gray-200','text-gray-700');
+      });
+
+      // Email validation
+      function validateEmail(email) {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email);
+      }
+
+      // Login form submission
+      loginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        errorMsg.classList.add('hidden');
+        successMsg.classList.add('hidden');
+        
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+
+        // Validation
+        if (!validateEmail(email)) {
+          errorMsg.querySelector('p').textContent = 'Please enter a valid email address.';
+          errorMsg.classList.remove('hidden');
+          return;
+        }
+
+        if (password.length < 6) {
+          errorMsg.querySelector('p').textContent = 'Password must be at least 6 characters.';
+          errorMsg.classList.remove('hidden');
+          return;
+        }
+
+        // Show loading state
+        loginBtn.classList.add('loading');
+        btnText.classList.add('hidden');
+        btnLoader.classList.remove('hidden');
+
+        // Simulate API call
+        setTimeout(() => {
+          // Demo credentials check
+          if (userType === 'student' && email === 'student@test.com' && password === 'pass123') {
+            localStorage.setItem('eduUser', JSON.stringify({email, role: 'student'}));
+            successMsg.classList.remove('hidden');
+            setTimeout(() => {
+              window.location.href = 'opportunities.html';
+            }, 1000);
+          } else if (userType === 'admin' && email === 'admin@test.com' && password === 'admin123') {
+            localStorage.setItem('eduUser', JSON.stringify({email, role: 'admin'}));
+            successMsg.classList.remove('hidden');
+            setTimeout(() => {
+              window.location.href = 'admin.html';
+            }, 1000);
+          } else {
+            loginBtn.classList.remove('loading');
+            btnText.classList.remove('hidden');
+            btnLoader.classList.add('hidden');
+            errorMsg.querySelector('p').textContent = `Invalid credentials for ${userType}. Please use the demo credentials shown above.`;
+            errorMsg.classList.remove('hidden');
+          }
+        }, 1000);
+      });
+    </script>
+  </body>
+</html>
