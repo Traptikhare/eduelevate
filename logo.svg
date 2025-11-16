@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="180" height="50" viewBox="0 0 180 50">
+  <!-- Background gradient -->
+  <defs>
+    <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#4B0082;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#00BFFF;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Book icon with graduation cap -->
+  <g transform="translate(10, 12)">
+    <!-- Book -->
+    <rect x="0" y="8" width="20" height="16" fill="white" rx="2"/>
+    <rect x="2" y="10" width="7" height="12" fill="#00BFFF" opacity="0.3"/>
+    <rect x="11" y="10" width="7" height="12" fill="#4B0082" opacity="0.3"/>
+    <line x1="10" y1="10" x2="10" y2="22" stroke="#666" stroke-width="1"/>
+    
+    <!-- Graduation cap -->
+    <polygon points="10,3 2,7 10,11 18,7" fill="url(#logoGrad)"/>
+    <rect x="9" y="7" width="2" height="8" fill="#4B0082"/>
+    <circle cx="11" cy="15" r="1.5" fill="#00BFFF"/>
+  </g>
+  
+  <!-- Text -->
+  <text x="42" y="32" font-family="Poppins, sans-serif" font-size="22" font-weight="700" fill="url(#logoGrad)">
+    EduElevate
+  </text>
+  
+  <!-- Tagline -->
+  <text x="43" y="43" font-family="Inter, sans-serif" font-size="8" font-weight="400" fill="#666">
+    Unlocking Student Potential
+  </text>
+</svg>
